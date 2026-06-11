@@ -13,17 +13,16 @@ interface SaveConfig {
   webhookUrl?: string;
 }
 
-// ─── Data: 3 groups × 3 sections = 9 total ───────────────────────────────────
+// ─── Data: 8 sections ────────────────────────────────────────────────────────
 const SECTIONS = [
   { key: "Part 1", icon: "⚡", title: "一分钟复盘",     group: "核心洞察" },
   { key: "Part 2", icon: "💡", title: "关键事实与观点", group: "核心洞察" },
   { key: "Part 3", icon: "🤝", title: "达成共识",       group: "核心洞察" },
-  { key: "Part 4", icon: "✅", title: "Action Items",   group: "行动追踪" },
+  { key: "Part 4", icon: "✅", title: "行动计划",        group: "行动追踪" },
   { key: "Part 5", icon: "❓", title: "未解决问题",     group: "行动追踪" },
-  { key: "Part 6", icon: "➡️", title: "建议后续动作",  group: "行动追踪" },
-  { key: "Part 7", icon: "👤", title: "关系经营洞察",   group: "深度沉淀" },
-  { key: "Part 8", icon: "🚀", title: "机会与风险",     group: "深度沉淀" },
-  { key: "Part 9", icon: "🔍", title: "反思与下次备忘", group: "深度沉淀" },
+  { key: "Part 6", icon: "👤", title: "关系经营洞察",   group: "深度沉淀" },
+  { key: "Part 7", icon: "🚀", title: "机会与风险",     group: "深度沉淀" },
+  { key: "Part 8", icon: "🔍", title: "反思与下次备忘", group: "深度沉淀" },
 ] as const;
 
 const GROUPS = [
