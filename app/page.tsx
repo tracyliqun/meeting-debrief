@@ -306,6 +306,7 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
   const [notionPageUrl, setNotionPageUrl] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [topic, setTopic] = useState("");
+  const [remember, setRemember] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -319,6 +320,7 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
         if (cfg.notionToken) setNotionToken(cfg.notionToken);
         if (cfg.notionPageId) setNotionPageUrl(cfg.notionPageId);
         if (cfg.webhookUrl) setWebhookUrl(cfg.webhookUrl);
+        setRemember(true);
       }
     } catch { /* ignore */ }
   }, []);
@@ -340,7 +342,11 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
     try {
       if (saveType === "notion") {
         const pageId = extractPageId(notionPageUrl);
-        localStorage.setItem(SAVE_CONFIG_KEY, JSON.stringify({ type: "notion", notionToken, notionPageId: notionPageUrl } as SaveConfig));
+        if (remember) {
+          localStorage.setItem(SAVE_CONFIG_KEY, JSON.stringify({ type: "notion", notionToken, notionPageId: notionPageUrl } as SaveConfig));
+        } else {
+          localStorage.removeItem(SAVE_CONFIG_KEY);
+        }
 
         const res = await fetch("/api/save-notion", {
           method: "POST",
@@ -351,7 +357,11 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
         if (!res.ok) throw new Error(data.error);
         setSaved(data.url);
       } else {
-        localStorage.setItem(SAVE_CONFIG_KEY, JSON.stringify({ type: "webhook", webhookUrl } as SaveConfig));
+        if (remember) {
+          localStorage.setItem(SAVE_CONFIG_KEY, JSON.stringify({ type: "webhook", webhookUrl } as SaveConfig));
+        } else {
+          localStorage.removeItem(SAVE_CONFIG_KEY);
+        }
         const res = await fetch(webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -444,6 +454,17 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
             placeholder="会议主题（用于标题，可选）"
             className={inputCls}
           />
+
+          {/* Remember credentials */}
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="w-3.5 h-3.5 accent-blue-500 cursor-pointer"
+            />
+            <span className={dark ? "text-xs text-slate-500" : "text-xs text-gray-400"}>记住账号信息</span>
+          </label>
 
           {saved ? (
             saved === "ok" ? (
