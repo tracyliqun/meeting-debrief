@@ -195,7 +195,7 @@ function DimensionMap({ theme }: { theme: Theme }) {
   return (
     <div className="w-full max-w-3xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <div className="text-4xl mb-3">🧠</div>
+        <div className="text-4xl mb-3">✦</div>
         <h2 className={dark ? "text-slate-200 text-lg font-semibold mb-1" : "text-gray-800 text-lg font-semibold mb-1"}>
           粘贴会议内容，开始复盘
         </h2>
@@ -626,7 +626,7 @@ export default function Home() {
           >
             {loading ? (
               <><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />正在复盘...</>
-            ) : "🧠  开始会议复盘"}
+            ) : "✦  开始会议复盘"}
           </button>
 
           {(content || output) && (
