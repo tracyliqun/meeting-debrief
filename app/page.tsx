@@ -61,6 +61,34 @@ const GROUP_ACCENT: Record<string, string> = Object.fromEntries(
 );
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+function suggestTopic(output: string): string {
+  const sections = parseSections(output);
+  const part1 = sections.find((s) => s.title.startsWith("Part 1"));
+  if (!part1) return "";
+  const lines = part1.content.split("\n");
+  // Prefer "核心目标" line
+  for (const line of lines) {
+    if (line.includes("核心目标")) {
+      const m = line.match(/[：:]\s*(.+)/);
+      if (m) {
+        const val = m[1].replace(/\*\*(.+?)\*\*/g, "$1").trim();
+        return val.length > 28 ? val.slice(0, 28) + "…" : val;
+      }
+    }
+  }
+  // Fallback: first bullet with a colon value
+  for (const line of lines) {
+    if (line.startsWith("- ") || line.startsWith("• ")) {
+      const m = line.match(/[：:]\s*(.+)/);
+      if (m) {
+        const val = m[1].replace(/\*\*(.+?)\*\*/g, "$1").trim();
+        return val.length > 28 ? val.slice(0, 28) + "…" : val;
+      }
+    }
+  }
+  return "";
+}
+
 function getSectionMeta(title: string) {
   const found = SECTIONS.find((s) => title.startsWith(s.key));
   return found ?? { icon: "📌", color: "#64748b", title, group: "", key: "" };
@@ -298,7 +326,7 @@ function ProgressTracker({ completedKeys, theme }: { completedKeys: Set<string>;
 // ─── Save Panel (optional) ────────────────────────────────────────────────────
 const SAVE_CONFIG_KEY = "meeting-debrief-save-config";
 
-function SavePanel({ output, theme }: { output: string; theme: Theme }) {
+function SavePanel({ output, theme, suggestedTopic }: { output: string; theme: Theme; suggestedTopic: string }) {
   const dark = theme === "dark";
   const [open, setOpen] = useState(false);
   const [saveType, setSaveType] = useState<SaveType>("notion");
@@ -307,6 +335,7 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
   const [webhookUrl, setWebhookUrl] = useState("");
   const [topic, setTopic] = useState("");
   const [remember, setRemember] = useState(false);
+  const [topicEdited, setTopicEdited] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null);
   const [saveError, setSaveError] = useState("");
@@ -324,6 +353,10 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
       }
     } catch { /* ignore */ }
   }, []);
+
+  useEffect(() => {
+    if (suggestedTopic && !topicEdited) setTopic(suggestedTopic);
+  }, [suggestedTopic, topicEdited]);
 
   const extractPageId = (url: string): string => {
     const m = url.match(/([a-f0-9]{32})/i) ?? url.match(/([a-f0-9-]{36})/i);
@@ -450,7 +483,7 @@ function SavePanel({ output, theme }: { output: string; theme: Theme }) {
 
           <input
             value={topic}
-            onChange={(e) => setTopic(e.target.value)}
+            onChange={(e) => { setTopic(e.target.value); setTopicEdited(true); }}
             placeholder="会议主题（用于标题，可选）"
             className={inputCls}
           />
@@ -580,6 +613,7 @@ export default function Home() {
   };
 
   const sections = output ? parseSections(output) : [];
+  const suggestedTopic = done ? suggestTopic(output) : "";
   const completedKeys = new Set(
     sections.map((s) => getSectionMeta(s.title).key).filter(Boolean)
   );
@@ -664,7 +698,7 @@ export default function Home() {
           )}
 
           {(loading || done) && <ProgressTracker completedKeys={completedKeys} theme={theme} />}
-          {done && <SavePanel output={output} theme={theme} />}
+          {done && <SavePanel output={output} theme={theme} suggestedTopic={suggestedTopic} />}
         </div>
 
         {/* Right Panel */}
