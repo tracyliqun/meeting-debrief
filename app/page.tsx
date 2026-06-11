@@ -450,7 +450,7 @@ function SavePanel({ output, dark, suggestedTopic }: { output: string; dark: boo
           {saved ? (
             saved === "ok"
               ? <p className="text-xs text-green-400">✓ 已发送到自定义端点</p>
-              : <a href={saved} target="_blank" rel="noreferrer" className="text-xs text-green-400 hover:text-green-300 transition-colors">✓ 已保存到 Notion →</a>
+              : <a href={saved} target="_blank" rel="noreferrer" className="text-xs text-green-400 hover:text-green-300 transition-colors">✓ 已保存，点击打开 →</a>
           ) : (
             <button onClick={handleSave} disabled={saving || !canSave}
               className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5">
