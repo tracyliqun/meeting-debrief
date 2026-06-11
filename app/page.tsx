@@ -225,7 +225,7 @@ function DimensionMap({ dark }: { dark: boolean }) {
       <div className="text-center mb-10">
         <div className="text-3xl mb-3 opacity-60">✦</div>
         <h2 className={`text-lg font-semibold mb-2 ${dark ? "text-slate-200" : "text-gray-800"}`}>粘贴会议内容，开始复盘</h2>
-        <p className={`text-sm ${dark ? "text-slate-500" : "text-gray-400"}`}>3 大维度 · 9 个模块，让每次会议成为可积累的长期资产</p>
+        <p className={`text-sm ${dark ? "text-slate-500" : "text-gray-400"}`}>3 大维度 · 8 个模块，让每次会议成为可积累的长期资产</p>
       </div>
       <div className="grid grid-cols-3 gap-3">
         {GROUPS.map((group) => {
