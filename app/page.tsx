@@ -508,7 +508,10 @@ export default function Home() {
   const scrollToSection = useCallback((key: string) => {
     const el = document.getElementById(`section-${key}`);
     if (el && outputRef.current) {
-      outputRef.current.scrollTo({ top: el.offsetTop - 20, behavior: "smooth" });
+      const containerRect = outputRef.current.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const offset = elRect.top - containerRect.top + outputRef.current.scrollTop - 20;
+      outputRef.current.scrollTo({ top: offset, behavior: "smooth" });
     }
   }, []);
 
