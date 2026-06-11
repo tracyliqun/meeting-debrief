@@ -107,7 +107,7 @@ ${content}
   try {
     const stream = await client.messages.stream({
       model: "claude-opus-4-7",
-      max_tokens: 6000,
+      max_tokens: 10000,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
     });
